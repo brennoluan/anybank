@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Container, StyledHeader, List, ListItem } from "./styles";
 import { UnauthenticatedActionList } from "./UnauthenticatedActionList";
 import { AuthenticatedActionList } from "./AuthenticatedActionList";
-import { IconLogo } from "../Icons";
+import { IconLogo } from "../../components/Icons";
 import { useAuthContext } from "../../app/hooks/useAuthContext";
 
 export const Header = () => {
