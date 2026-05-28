@@ -12,6 +12,10 @@ import { CreateTransaction } from "../../domain/useCases/CreateTransaction";
 import { TransactionSupabaseRepository } from "../../infra/supabase/TransactionSupabaseRepository";
 import { useAuthContext } from "../../app/hooks/useAuthContext";
 import { toast } from "react-toastify";
+import { ITransaction } from "../../domain/entities/ITransaction";
+interface TransactionFormProps {
+  onRegister: (transaction: ITransaction) => void;
+}
 
 const listTransactionType = new ListTransactionType(
   new TransactionTypeSupabaseRepository(),
@@ -20,7 +24,7 @@ const createTransaction = new CreateTransaction(
   new TransactionSupabaseRepository(),
 );
 
-export const TransactionForm = () => {
+export const TransactionForm = ({ onRegister }: TransactionFormProps) => {
   const [transactionType, setTransactionType] = useState("");
   const [transactionValue, setTransactionValue] = useState("");
   const [transactionTypes, setTransactionTypes] = useState<ITransactionType[]>(
@@ -42,14 +46,16 @@ export const TransactionForm = () => {
     });
     if (session) {
       try {
-        await createTransaction.execute(
+        const transaction = await createTransaction.execute(
           parseFloat(transactionValue),
           parseInt(transactionType),
           session.user.id,
         );
+
         setTransactionValue("");
         setTransactionType("");
         toast.success("Transação criada com sucesso!");
+        onRegister(transaction);
       } catch (error) {
         console.error("Error creating transaction:", error);
         toast.error("Oops! Ocorreu um erro ao criar a transação!");
